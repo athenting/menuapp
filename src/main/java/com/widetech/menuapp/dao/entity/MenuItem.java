@@ -14,7 +14,7 @@ import lombok.Setter;
 @Entity
 public class MenuItem {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE)
     private Integer id;
 
     @Column(name = "name")
@@ -29,4 +29,5 @@ public class MenuItem {
     @JoinColumn(name = "menu_id")
     @NotNull
     private Menu menu;
+
 }

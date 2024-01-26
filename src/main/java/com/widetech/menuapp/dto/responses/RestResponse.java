@@ -3,6 +3,7 @@ package com.widetech.menuapp.dto.responses;
 import com.widetech.menuapp.constants.ErrorCode;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Getter;
+import lombok.Setter;
 
 import java.util.Objects;
 
@@ -13,7 +14,10 @@ import java.util.Objects;
  * @date 2022/5/11
  */
 @Getter
+@Setter
 public class RestResponse<T> {
+
+    private int status; // HTTP status code
 
     /**
      * 响应码
@@ -55,11 +59,26 @@ public class RestResponse<T> {
         return new RestResponse<>();
     }
 
-    /**
-     * 业务处理成功，有数据返回
-     */
     public static <T> RestResponse<T> success(T data) {
-        return new RestResponse<>(data);
+        RestResponse<T> response = new RestResponse<>();
+        response.status = 200;
+        response.data = data;
+        response.message = "OK";
+        return response;
+    }
+
+    public static RestResponse<Void> noContent() {
+        RestResponse<Void> response = new RestResponse<>();
+        response.status = 204;
+        response.message = "No Content";
+        return response;
+    }
+
+    public static <T> RestResponse<T> notFound() {
+        RestResponse<T> response = new RestResponse<>();
+        response.status = 404;
+        response.message = "Not Found";
+        return response;
     }
 
     /**
@@ -69,19 +88,11 @@ public class RestResponse<T> {
         return new RestResponse<>(errorCode);
     }
 
-
     /**
      * 系统错误
      */
     public static RestResponse<Void> sysError() {
         return new RestResponse<>(ErrorCode.SYSTEM_ERROR);
-    }
-
-    /**
-     * 判断是否成功
-     */
-    public boolean isSuccess() {
-        return Objects.equals(this.code, ErrorCode.SUCCESS.getCode());
     }
 
 }

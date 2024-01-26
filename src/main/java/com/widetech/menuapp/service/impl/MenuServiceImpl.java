@@ -2,6 +2,7 @@ package com.widetech.menuapp.service.impl;
 
 import com.widetech.menuapp.dao.entity.Menu;
 import com.widetech.menuapp.dao.repository.MenuRepository;
+import com.widetech.menuapp.dto.requests.MenuRegisterRequest;
 import com.widetech.menuapp.service.MenuService;
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,7 +17,13 @@ public class MenuServiceImpl implements MenuService {
     private MenuRepository menuRepository;
 
     // 创建新菜单
-    public Menu registerMenu(Menu menu) {
+    public Menu registerMenu(MenuRegisterRequest request) {
+
+        Menu menu = new Menu();
+
+        menu.setName(request.getName());
+        menu.setDescription(request.getDescription());
+
         return menuRepository.save(menu);
     }
 

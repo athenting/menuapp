@@ -22,6 +22,7 @@ public class CustomerServiceImpl implements CustomerService {
 
     @Override
     public Customer createCustomer(Customer customer) {
+        //if name empty,set phone number as name
         if (customer.getName() == null || customer.getName().isEmpty()) {
             customer.setName(customer.getPhoneNumber());
         }

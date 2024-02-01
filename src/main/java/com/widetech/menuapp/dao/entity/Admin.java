@@ -1,6 +1,7 @@
 package com.widetech.menuapp.dao.entity;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotEmpty;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
@@ -18,7 +19,8 @@ public class Admin {
     @Column(name = "username")
     private String username;
 
-    //加盐
+    // password will be stored as encoded hash
+    @NotEmpty
     @Column(name = "password")
     private String password;
 

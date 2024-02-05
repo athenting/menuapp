@@ -7,7 +7,7 @@ import lombok.Setter;
 import lombok.ToString;
 
 @Entity
-@Table(name = "admin")
+@Table(name = "menu_admin")
 @Getter
 @Setter
 @ToString

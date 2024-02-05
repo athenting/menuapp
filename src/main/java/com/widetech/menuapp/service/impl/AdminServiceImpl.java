@@ -1,15 +1,12 @@
 package com.widetech.menuapp.service.impl;
 
 import com.widetech.menuapp.constants.ErrorCode;
-import com.widetech.menuapp.exception.BusinessException;
-import com.widetech.menuapp.service.AdminService;
-
 import com.widetech.menuapp.dao.entity.Admin;
 import com.widetech.menuapp.dao.repository.AdminRepository;
+import com.widetech.menuapp.exception.BusinessException;
+import com.widetech.menuapp.service.AdminService;
 import jakarta.annotation.Resource;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -26,7 +23,6 @@ public class AdminServiceImpl implements AdminService {
 
     @Resource
     private final AdminRepository adminRepository;
-    @Resource
     private final BCryptPasswordEncoder passwordEncoder;
 
     public AdminServiceImpl(AdminRepository adminRepository) {
@@ -74,4 +70,28 @@ public class AdminServiceImpl implements AdminService {
     public void deleteById(Integer id) {
         adminRepository.deleteById(id);
     }
+//    @Override
+//    public RestResp<UserLoginRespDto> login(UserLoginReqDto dto) {
+//        // 查询用户信息
+//
+//
+//
+//        if (Objects.isNull(userInfo)) {
+//            // 用户不存在
+//            throw new BusinessException(ErrorCodeEnum.USER_ACCOUNT_NOT_EXIST);
+//        }
+//
+//        // 判断密码是否正确
+//        if (!Objects.equals(userInfo.getPassword()
+//                , DigestUtils.md5DigestAsHex(dto.getPassword().getBytes(StandardCharsets.UTF_8)))) {
+//            // 密码错误
+//            throw new BusinessException(ErrorCodeEnum.USER_PASSWORD_ERROR);
+//        }
+//
+//        // 登录成功，生成JWT并返回
+//        return RestResp.ok(UserLoginRespDto.builder()
+//                .token(jwtUtils.generateToken(userInfo.getId(), SystemConfigConsts.NOVEL_FRONT_KEY))
+//                .uid(userInfo.getId())
+//                .nickName(userInfo.getNickName()).build());
+//    }
 }

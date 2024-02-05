@@ -2,14 +2,13 @@ package com.widetech.menuapp.dao.entity;
 
 import cn.hutool.core.math.Money;
 import jakarta.persistence.*;
-import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
 
 import java.util.Date;
 
 @Entity
-@Table(name = "order")
+@Table(name = "customer_order")
 @Getter
 @Setter
 public class Order {
@@ -22,6 +21,9 @@ public class Order {
     @JoinColumn(name = "customer_id")
     private Customer customer;
 
+    /**
+     * total price
+     */
     @Column(name = "total_price")
     private Money totalPrice;
 

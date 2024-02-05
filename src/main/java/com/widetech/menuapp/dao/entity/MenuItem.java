@@ -1,12 +1,11 @@
 package com.widetech.menuapp.dao.entity;
 
-import cn.hutool.core.math.Money;
 import jakarta.persistence.*;
-import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
-import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
+
+import java.math.BigDecimal;
 
 @Getter
 @Setter
@@ -22,8 +21,8 @@ public class MenuItem {
     private String name;
 
     @Column(name = "price")
-    @NotBlank
-    private Money price;
+    @NotNull
+    private BigDecimal price;
 
     @ManyToOne
     @JoinColumn(name = "menu_id")

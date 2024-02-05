@@ -15,7 +15,7 @@ import java.util.List;
  */
 @RestController
 @RequestMapping("/api/admin")
-public class AdminAuthenticationController {
+public class AdminManageController {
 
     @Autowired
     AdminService adminService;
@@ -45,11 +45,16 @@ public class AdminAuthenticationController {
      * @param admin the admin user to be created
      * @return the created admin user
      */
-    @PostMapping
+    @PostMapping("/create")
     public Admin createAdmin(@RequestBody Admin admin) {
         return adminService.save(admin);
     }
 
+//    @Operation(summary = "admin login api")
+//    @PostMapping("login")
+//    public RestResp<AdminLoginRespDto> login(@Valid @RequestBody AdminLoginDto dto) {
+//        return adminService.login(dto);
+//    }
     /**
      * Updates the password of an admin user.
      * once created, admin name cannot be modified
@@ -73,5 +78,7 @@ public class AdminAuthenticationController {
     public void deleteAdmin(@PathVariable Integer id) {
         adminService.deleteById(id);
     }
+
+
 
 }

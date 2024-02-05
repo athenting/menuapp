@@ -6,7 +6,6 @@ import com.widetech.menuapp.dto.responses.RestResponse;
 import com.widetech.menuapp.service.CustomerService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.cglib.beans.BeanCopier;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Optional;

@@ -5,10 +5,8 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Getter;
 import lombok.Setter;
 
-import java.util.Objects;
-
 /**
- * Http Rest 响应工具及数据格式封装
+ * Http Rest response
  *
  * @author xiongxiaoyang
  * @date 2022/5/11
@@ -20,21 +18,21 @@ public class RestResponse<T> {
     private int status; // HTTP status code
 
     /**
-     * 响应码
+     * error code
      */
-    @Schema(description = "错误码，00000-没有错误")
+    @Schema(description = "error code")
     private String code;
 
     /**
-     * 响应消息
+     * response message
      */
-    @Schema(description = "响应消息")
+    @Schema(description = "response msg")
     private String message;
 
     /**
-     * 响应数据
+     * response data
      */
-    @Schema(description = "响应数据")
+    @Schema(description = "response data")
     private T data;
 
     private RestResponse() {
@@ -47,18 +45,25 @@ public class RestResponse<T> {
         this.message = errorCode.getDescription();
     }
 
-    private RestResponse(T data) {
+    public RestResponse(T data) {
         this();
         this.data = data;
     }
 
     /**
-     * 业务处理成功,无数据返回
+     * business successfully done, with no data returned
      */
     public static RestResponse<Void> success() {
         return new RestResponse<>();
     }
 
+    /**
+     * Creates a successful REST response with the provided data.
+     *
+     * @param data The data to be included in the response.
+     * @param <T>  The type of the data.
+     * @return A RestResponse object representing a successful response, with the provided data included.
+     */
     public static <T> RestResponse<T> success(T data) {
         RestResponse<T> response = new RestResponse<>();
         response.status = 200;
@@ -67,6 +72,11 @@ public class RestResponse<T> {
         return response;
     }
 
+    /**
+     * Creates a REST response with HTTP status code 204 (No Content) and no body content.
+     *
+     * @return RestResponse
+     */
     public static RestResponse<Void> noContent() {
         RestResponse<Void> response = new RestResponse<>();
         response.status = 204;
@@ -74,6 +84,12 @@ public class RestResponse<T> {
         return response;
     }
 
+    /**
+     * Creates a RestResponse object with status code 404 (Not Found) and message "Not Found".
+     *
+     * @return a RestResponse object with status code 404 and message "Not Found"
+     * @param <T> the type parameter
+     */
     public static <T> RestResponse<T> notFound() {
         RestResponse<T> response = new RestResponse<>();
         response.status = 404;
@@ -82,14 +98,19 @@ public class RestResponse<T> {
     }
 
     /**
-     * 业务处理失败
+     * Creates a RestResponse object with the provided error code.
+     *
+     * @param errorCode The error code to be included in the response.
+     * @return A RestResponse object representing a failed response, with the provided error code included.
      */
     public static RestResponse<Void> fail(ErrorCode errorCode) {
         return new RestResponse<>(errorCode);
     }
 
     /**
-     * 系统错误
+     * Creates a RestResponse object representing a system error.
+     *
+     * @return A RestResponse object representing a system error.
      */
     public static RestResponse<Void> sysError() {
         return new RestResponse<>(ErrorCode.SYSTEM_ERROR);

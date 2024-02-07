@@ -12,7 +12,7 @@ import java.util.Optional;
 
 @RestController
 @RequestMapping("/api/customers")
-public class CustomerOrderController {
+public class CustomerController {
     @Autowired
     private CustomerService customerService;
 

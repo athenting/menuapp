@@ -29,4 +29,9 @@ public class MenuItem {
     @NotNull
     private Menu menu;
 
+//    public MenuItem(String name, BigDecimal price) {
+//        this.name = name;
+//        this.price = price;
+//        this.menu=
+//    }
 }

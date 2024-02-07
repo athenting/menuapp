@@ -6,7 +6,7 @@ package com.widetech.menuapp.constants;
 
 public enum ErrorCode {
     // Business error codes
-    SUCCESS("A1", "Business error description 1"),
+    SUCCESS("A1", "Business operated successfully."),
     BUSINESS_ERROR_A2("A2", "Business error description 2"),
     // other business errors ...
 

@@ -21,9 +21,9 @@ public class MenuServiceImpl implements MenuService {
     }
 
     // 更新菜单信息
-    public Menu updateMenu(Menu updatedMenu) {
+    public Menu updateMenu(Integer id, Menu updatedMenu) {
         // 检查菜单是否存在
-        Menu existingMenu = menuRepository.findById(updatedMenu.getId())
+        Menu existingMenu = menuRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("Menu not found"));
 
         // 更新菜单信息

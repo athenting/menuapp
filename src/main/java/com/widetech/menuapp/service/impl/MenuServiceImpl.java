@@ -1,6 +1,8 @@
 package com.widetech.menuapp.service.impl;
 
 import com.widetech.menuapp.dao.entity.Menu;
+import com.widetech.menuapp.dao.entity.MenuItem;
+import com.widetech.menuapp.dao.repository.MenuItemRepository;
 import com.widetech.menuapp.dao.repository.MenuRepository;
 import com.widetech.menuapp.service.MenuService;
 import jakarta.persistence.EntityNotFoundException;
@@ -14,6 +16,9 @@ public class MenuServiceImpl implements MenuService {
 
     @Autowired
     private MenuRepository menuRepository;
+
+    @Autowired
+    private MenuItemRepository itemRepository;
 
     // 创建新菜单
     public Menu registerMenu(Menu newMenu) {
@@ -43,6 +48,23 @@ public class MenuServiceImpl implements MenuService {
         // 删除菜单
         menuRepository.delete(existingMenu);
     }
+
+    public void deleteItem(Integer itemId){
+        //find the menu and item
+        Menu existingMenu = menuRepository.findById(itemId)
+                .orElseThrow(() -> new EntityNotFoundException("Menu not found"));
+        List<MenuItem> menuItems = existingMenu.getMenuItems();
+
+        //find the item to be removed
+        MenuItem itemToRemove = menuItems.stream()
+                .filter(item -> item.getId().equals(itemId))
+                .findFirst()
+                .orElseThrow(() -> new EntityNotFoundException("Menu item not found"));
+        //remove the item and persist in db
+        existingMenu.removeMenuItem(itemToRemove);
+        menuRepository.save(existingMenu);
+    }
+
 
     // 查询所有菜单
     public List<Menu> getAllMenus() {

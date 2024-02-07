@@ -103,7 +103,7 @@ public class RestResponse<T> {
      * @param errorCode The error code to be included in the response.
      * @return A RestResponse object representing a failed response, with the provided error code included.
      */
-    public static RestResponse<Void> fail(ErrorCode errorCode) {
+    public static <T>  RestResponse<T> fail(ErrorCode errorCode) {
         return new RestResponse<>(errorCode);
     }
 

@@ -26,4 +26,7 @@ public class Admin {
 
     @Column(name = "email")
     private String email;
+
+    @Column(name = "status")
+    private String status;
 }

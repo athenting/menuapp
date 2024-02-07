@@ -7,7 +7,16 @@ package com.widetech.menuapp.constants;
 public enum ErrorCode {
     // Business error codes
     SUCCESS("A1", "Business operated successfully."),
-    BUSINESS_ERROR_A2("A2", "Business error description 2"),
+    MENU_NOT_FOUND("A2", "Menu not found"),
+
+    PASSWORD_ENCODE_ERROR("A2", "Password encode fails"),
+
+    ADMIN_NOT_EXIST("A3", "Admin does not exist"),
+
+    USER_PASSWORD_ERROR("A4", "Password does not match"),
+
+    ADMIN_STATUS_ERROR("A5", "Admin is already online"),
+
     // other business errors ...
 
     // External resources and Database error codes

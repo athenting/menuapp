@@ -3,9 +3,14 @@ package com.widetech.menuapp.service.impl;
 import com.widetech.menuapp.constants.ErrorCode;
 import com.widetech.menuapp.dao.entity.Admin;
 import com.widetech.menuapp.dao.repository.AdminRepository;
+import com.widetech.menuapp.dto.requests.AdminLoginDto;
+import com.widetech.menuapp.dto.requests.AdminRegisterDto;
+import com.widetech.menuapp.dto.responses.AdminLoginResultDto;
+import com.widetech.menuapp.dto.responses.LoginStatus;
 import com.widetech.menuapp.exception.BusinessException;
 import com.widetech.menuapp.service.AdminService;
 import jakarta.annotation.Resource;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -30,10 +35,13 @@ public class AdminServiceImpl implements AdminService {
         this.passwordEncoder = new BCryptPasswordEncoder();
     }
 
-    @Override
-    public Admin save(Admin admin) {
-        admin.setPassword(passwordEncoder.encode(admin.getPassword())); // encode password
-        return adminRepository.save(admin);
+    public AdminRegisterDto save(AdminRegisterDto registerDto) {
+        Admin admin = new Admin();
+        admin.setPassword(passwordEncoder.encode(registerDto.getPassword())); // encode password
+        admin.setEmail(registerDto.getEmail());
+        admin.setStatus(LoginStatus.OFFLINE.name());
+        adminRepository.save(admin);
+        return registerDto;
     }
 
     @Override
@@ -47,7 +55,7 @@ public class AdminServiceImpl implements AdminService {
             return a;
         } else {
             // throw an exception
-            throw new BusinessException(ErrorCode.BUSINESS_ERROR_A2);
+            throw new BusinessException(ErrorCode.PASSWORD_ENCODE_ERROR);
         }
     }
 
@@ -70,28 +78,31 @@ public class AdminServiceImpl implements AdminService {
     public void deleteById(Integer id) {
         adminRepository.deleteById(id);
     }
-//    @Override
-//    public RestResp<UserLoginRespDto> login(UserLoginReqDto dto) {
-//        // 查询用户信息
-//
-//
-//
-//        if (Objects.isNull(userInfo)) {
-//            // 用户不存在
-//            throw new BusinessException(ErrorCodeEnum.USER_ACCOUNT_NOT_EXIST);
-//        }
-//
-//        // 判断密码是否正确
-//        if (!Objects.equals(userInfo.getPassword()
-//                , DigestUtils.md5DigestAsHex(dto.getPassword().getBytes(StandardCharsets.UTF_8)))) {
-//            // 密码错误
-//            throw new BusinessException(ErrorCodeEnum.USER_PASSWORD_ERROR);
-//        }
-//
-//        // 登录成功，生成JWT并返回
-//        return RestResp.ok(UserLoginRespDto.builder()
-//                .token(jwtUtils.generateToken(userInfo.getId(), SystemConfigConsts.NOVEL_FRONT_KEY))
-//                .uid(userInfo.getId())
-//                .nickName(userInfo.getNickName()).build());
-//    }
+
+    @Override
+    public AdminLoginResultDto login(AdminLoginDto dto) {
+        // 查询用户信息
+        Admin admin = adminRepository.findByEmail(dto.getEmail());
+
+        if (admin == null) {
+            // 用户不存在
+            throw new BusinessException(ErrorCode.ADMIN_NOT_EXIST);
+        }
+
+        // 判断密码是否正确
+        if (!passwordEncoder.matches(dto.getPassword(), admin.getPassword())) {
+            // 密码错误
+            throw new BusinessException(ErrorCode.USER_PASSWORD_ERROR);
+        }
+
+        if (!StringUtils.equals(LoginStatus.OFFLINE.name(), admin.getStatus())) {
+            //  status error
+            throw new BusinessException(ErrorCode.ADMIN_STATUS_ERROR);
+        }
+        // login success
+        admin.setStatus(LoginStatus.ONLINE.name());
+        adminRepository.save(admin);
+        return AdminLoginResultDto.builder().id(admin.getId()).email(admin.getEmail()).status(admin.getStatus()).build();
+
+    }
 }

@@ -14,6 +14,8 @@ public interface MenuService {
 
     public void deleteMenu(Integer menuId);
 
+    public void deleteItem(Integer itemId);
+
     public List<Menu> getAllMenus();
 
     public Menu getMenuById(Integer menuId);

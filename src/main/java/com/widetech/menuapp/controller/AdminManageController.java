@@ -1,9 +1,14 @@
 package com.widetech.menuapp.controller;
 
+import com.widetech.menuapp.constants.ErrorCode;
 import com.widetech.menuapp.dao.entity.Admin;
-import org.springframework.web.bind.annotation.*;
+import com.widetech.menuapp.dto.requests.AdminLoginDto;
+import com.widetech.menuapp.dto.requests.AdminRegisterDto;
+import com.widetech.menuapp.dto.responses.AdminLoginResultDto;
+import com.widetech.menuapp.dto.responses.RestResponse;
 import com.widetech.menuapp.service.AdminService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -22,7 +27,7 @@ public class AdminManageController {
 
     /**
      * get all existing admin users
-     * */
+     */
     @GetMapping
     public List<Admin> getAllAdmins() {
         return adminService.getAll();
@@ -42,12 +47,12 @@ public class AdminManageController {
     /**
      * Creates a new admin user.
      *
-     * @param admin the admin user to be created
+     * @param registerDto the admin user to be created
      * @return the created admin user
      */
     @PostMapping("/create")
-    public Admin createAdmin(@RequestBody Admin admin) {
-        return adminService.save(admin);
+    public AdminRegisterDto createAdmin(@RequestBody AdminRegisterDto registerDto) {
+        return adminService.save(registerDto);
     }
 
 //    @Operation(summary = "admin login api")
@@ -55,6 +60,7 @@ public class AdminManageController {
 //    public RestResp<AdminLoginRespDto> login(@Valid @RequestBody AdminLoginDto dto) {
 //        return adminService.login(dto);
 //    }
+
     /**
      * Updates the password of an admin user.
      * once created, admin name cannot be modified
@@ -77,6 +83,16 @@ public class AdminManageController {
     @DeleteMapping("/{id}")
     public void deleteAdmin(@PathVariable Integer id) {
         adminService.deleteById(id);
+    }
+
+    @PostMapping("/login")
+    public RestResponse<AdminLoginResultDto> loginAdmin(@RequestBody AdminLoginDto loginDto) {
+        try {
+            AdminLoginResultDto resultDto = adminService.login(loginDto);
+            return RestResponse.success(resultDto);
+        } catch (Exception ex) {
+            return RestResponse.fail(ErrorCode.SYSTEM_ERROR);
+        }
     }
 
 

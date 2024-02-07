@@ -10,7 +10,7 @@ import lombok.Data;
  * Description:
  */
 @Data
-public class MenuRegisterRequest {
+public class MenuRegisterDto {
 
     @Schema(description = "menu name", required = true)
     @NotBlank

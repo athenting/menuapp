@@ -16,10 +16,10 @@ public class AdminLoginResultDto {
     @Schema(description = "admin id")
     private Integer id;
 
-    @Schema(description = "nickname")
-    private String nickName;
+    @Schema(description = "email")
+    private String email;
 
     @Schema(description = "user token")
-    private String token;
+    private String status;
 
 }

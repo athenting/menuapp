@@ -4,6 +4,7 @@ import com.widetech.menuapp.dao.entity.Admin;
 import com.widetech.menuapp.dto.requests.AdminLoginDto;
 import com.widetech.menuapp.dto.requests.AdminRegisterDto;
 import com.widetech.menuapp.dto.responses.AdminLoginResultDto;
+import com.widetech.menuapp.dto.responses.AdminRegisterResultDto;
 
 import java.util.List;
 import java.util.Optional;
@@ -15,7 +16,7 @@ import java.util.Optional;
  */
 public interface AdminService {
 
-    AdminRegisterDto save(AdminRegisterDto admin);
+    AdminRegisterResultDto save(AdminRegisterDto admin);
 
     Admin updatePassword(Integer id, String newPassword);
 
@@ -28,4 +29,6 @@ public interface AdminService {
     void deleteById(Integer id);
 
     AdminLoginResultDto login(AdminLoginDto dto);
+
+    void logout(String email);
 }

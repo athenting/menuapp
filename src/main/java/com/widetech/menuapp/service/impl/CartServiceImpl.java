@@ -8,6 +8,7 @@ import com.widetech.menuapp.dao.repository.CartItemRepository;
 import com.widetech.menuapp.dao.repository.CartRepository;
 import com.widetech.menuapp.dao.repository.CustomerRepository;
 import com.widetech.menuapp.service.CartService;
+import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -31,11 +32,14 @@ public class CartServiceImpl implements CartService {
     private CartItemRepository itemRepository;
 
     // Get the shopping cart for a specific customer
+    @Override
     public Cart getCart(Integer customerId) {
         return cartRepository.getCartByCustomerId(customerId);
     }
 
     // Add an item to a specific customer's shopping cart
+    @Override
+    @Transactional
     public Cart addToCart(Integer customerId, CartItem item) {
 
         //check if the customer has already own a cart, if not, create a new cart for him/her
@@ -52,11 +56,15 @@ public class CartServiceImpl implements CartService {
     }
 
     // Remove an item from the shopping cart
+    @Override
+    @Transactional
     public void removeFromCart(Integer itemId) {
         itemRepository.deleteById(itemId);
     }
 
     // Generate an order and empty the shopping cart
+    @Override
+    @Transactional
     public Optional<Order> checkout(Integer cartId) {
         Optional<Cart> cart = cartRepository.findById(cartId);
         if (cart.isPresent()) {

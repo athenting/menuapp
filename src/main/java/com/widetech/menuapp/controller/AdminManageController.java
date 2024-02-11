@@ -5,6 +5,7 @@ import com.widetech.menuapp.dao.entity.Admin;
 import com.widetech.menuapp.dto.requests.AdminLoginDto;
 import com.widetech.menuapp.dto.requests.AdminRegisterDto;
 import com.widetech.menuapp.dto.responses.AdminLoginResultDto;
+import com.widetech.menuapp.dto.responses.AdminRegisterResultDto;
 import com.widetech.menuapp.dto.responses.RestResponse;
 import com.widetech.menuapp.service.AdminService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -51,15 +52,9 @@ public class AdminManageController {
      * @return the created admin user
      */
     @PostMapping("/create")
-    public AdminRegisterDto createAdmin(@RequestBody AdminRegisterDto registerDto) {
-        return adminService.save(registerDto);
+    public RestResponse<AdminRegisterResultDto> createAdmin(@RequestBody AdminRegisterDto registerDto) {
+        return RestResponse.success(adminService.save(registerDto));
     }
-
-//    @Operation(summary = "admin login api")
-//    @PostMapping("login")
-//    public RestResp<AdminLoginRespDto> login(@Valid @RequestBody AdminLoginDto dto) {
-//        return adminService.login(dto);
-//    }
 
     /**
      * Updates the password of an admin user.
@@ -95,5 +90,14 @@ public class AdminManageController {
         }
     }
 
+    @PostMapping("/logout/{id}")
+    public RestResponse<Void> logout(@PathVariable Integer id, @RequestParam String email) {
+        try {
+            adminService.logout(email);
+            return RestResponse.success();
+        } catch (Exception ex) {
+            return RestResponse.fail(ErrorCode.SYSTEM_ERROR);
+        }
+    }
 
 }

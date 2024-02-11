@@ -6,10 +6,12 @@ import com.widetech.menuapp.dao.repository.AdminRepository;
 import com.widetech.menuapp.dto.requests.AdminLoginDto;
 import com.widetech.menuapp.dto.requests.AdminRegisterDto;
 import com.widetech.menuapp.dto.responses.AdminLoginResultDto;
+import com.widetech.menuapp.dto.responses.AdminRegisterResultDto;
 import com.widetech.menuapp.dto.responses.LoginStatus;
 import com.widetech.menuapp.exception.BusinessException;
 import com.widetech.menuapp.service.AdminService;
 import jakarta.annotation.Resource;
+import jakarta.transaction.Transactional;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -35,16 +37,26 @@ public class AdminServiceImpl implements AdminService {
         this.passwordEncoder = new BCryptPasswordEncoder();
     }
 
-    public AdminRegisterDto save(AdminRegisterDto registerDto) {
+    @Override
+    @Transactional
+    public AdminRegisterResultDto save(AdminRegisterDto registerDto) {
+
+        if (!adminRepository.findByEmail(registerDto.getEmail()).isEmpty()) {
+            throw new BusinessException(ErrorCode.EMAIL_ALREADY_REGISTERED);
+        }
+
         Admin admin = new Admin();
         admin.setPassword(passwordEncoder.encode(registerDto.getPassword())); // encode password
         admin.setEmail(registerDto.getEmail());
         admin.setStatus(LoginStatus.OFFLINE.name());
-        adminRepository.save(admin);
-        return registerDto;
+        admin.setUsername(registerDto.getName());
+        Admin savedAdmin = adminRepository.save(admin);
+
+        return AdminRegisterResultDto.builder().id(savedAdmin.getId()).name(savedAdmin.getUsername()).email(savedAdmin.getEmail()).status(savedAdmin.getStatus()).build();
     }
 
     @Override
+    @Transactional
     public Admin updatePassword(Integer id, String newPassword) {
         Optional<Admin> admin = adminRepository.findById(id);
 
@@ -71,38 +83,74 @@ public class AdminServiceImpl implements AdminService {
 
     @Override
     public Optional<Admin> findByEmail(String email) {
-        return Optional.ofNullable(adminRepository.findByEmail(email));
+        List<Admin> admins = adminRepository.findByEmail(email);
+        Admin firstAdminWithEmail = admins != null ? admins.stream().findFirst().orElse(null) : null;
+        return Optional.ofNullable(firstAdminWithEmail);
     }
 
     @Override
+    @Transactional
     public void deleteById(Integer id) {
         adminRepository.deleteById(id);
     }
 
     @Override
+    @Transactional
     public AdminLoginResultDto login(AdminLoginDto dto) {
-        // 查询用户信息
-        Admin admin = adminRepository.findByEmail(dto.getEmail());
+        // Retrieve all admins associated with the email
+        List<Admin> admins = adminRepository.findByEmail(dto.getEmail());
 
-        if (admin == null) {
-            // 用户不存在
+        if (admins.isEmpty()) {
+            // No admin with the provided email exists
             throw new BusinessException(ErrorCode.ADMIN_NOT_EXIST);
         }
 
-        // 判断密码是否正确
+        // Select first admin from the list
+        Admin admin = admins.getFirst();
+
+        // Check if the passwords match
         if (!passwordEncoder.matches(dto.getPassword(), admin.getPassword())) {
-            // 密码错误
+            // Password does not match
             throw new BusinessException(ErrorCode.USER_PASSWORD_ERROR);
         }
 
         if (!StringUtils.equals(LoginStatus.OFFLINE.name(), admin.getStatus())) {
-            //  status error
+            //  Admin is not offline
             throw new BusinessException(ErrorCode.ADMIN_STATUS_ERROR);
         }
-        // login success
+        // Set the admin status to online
         admin.setStatus(LoginStatus.ONLINE.name());
         adminRepository.save(admin);
-        return AdminLoginResultDto.builder().id(admin.getId()).email(admin.getEmail()).status(admin.getStatus()).build();
+        return AdminLoginResultDto.builder()
+                .id(admin.getId())
+                .name(admin.getUsername())
+                .email(admin.getEmail())
+                .status(admin.getStatus())
+                .build();
+    }
 
+    @Override
+    @Transactional
+    public void  logout(String email) {
+        // Retrieve all admins associated with the email
+        List<Admin> admins = adminRepository.findByEmail(email);
+
+        if (admins.isEmpty()) {
+            // No admin with the provided email exists
+            throw new BusinessException(ErrorCode.ADMIN_NOT_EXIST);
+        }
+
+        // Select first admin from the list
+        Admin admin = admins.getFirst();
+
+        // Check if the admin is already offline
+        if (StringUtils.equals(LoginStatus.OFFLINE.name(), admin.getStatus())) {
+            // Admin already offline
+            throw new BusinessException(ErrorCode.ADMIN_STATUS_ERROR);
+        }
+
+        // Set the admin status to offline
+        admin.setStatus(LoginStatus.OFFLINE.name());
+        adminRepository.save(admin);
     }
 }

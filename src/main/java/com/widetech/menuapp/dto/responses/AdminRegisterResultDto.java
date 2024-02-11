@@ -6,13 +6,12 @@ import lombok.Data;
 
 /**
  * Author: athen
- * Date: 2/1/2024
+ * Date: 2/07/2024
  * Description:
  */
-@Data
 @Builder
-public class AdminLoginResultDto {
-
+@Data
+public class AdminRegisterResultDto {
     @Schema(description = "admin id")
     private Integer id;
 
@@ -24,5 +23,4 @@ public class AdminLoginResultDto {
 
     @Schema(description = "user token")
     private String status;
-
 }

@@ -1,6 +1,6 @@
 package com.widetech.menuapp.service;
 
-import com.widetech.menuapp.dao.entity.Customer;
+import com.widetech.menuapp.dto.requests.CustomerDto;
 
 import java.util.Optional;
 
@@ -11,12 +11,12 @@ import java.util.Optional;
  */
 public interface CustomerService {
 
-    Customer createCustomer(Customer customer);
+    CustomerDto createCustomer(CustomerDto customer);
 
-    Customer updateCustomer(String phoneNumber, Customer customer);
+    CustomerDto updateCustomer(String phoneNumber, CustomerDto customerDto);
 
     void deleteCustomer(String phoneNumber);
 
-    Optional<Customer> getCustomerByPhoneNumber(String phoneNumber);
+    Optional<CustomerDto> getCustomerByPhoneNumber(String phoneNumber);
 
 }

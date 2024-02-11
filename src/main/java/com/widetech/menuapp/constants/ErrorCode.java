@@ -15,9 +15,13 @@ public enum ErrorCode {
 
     USER_PASSWORD_ERROR("A4", "Password does not match"),
 
-    ADMIN_STATUS_ERROR("A5", "Admin is already online"),
+    ADMIN_STATUS_ERROR("A5", "Admin status not correct"),
 
-    // other business errors ...
+    EMAIL_ALREADY_REGISTERED("A6","Email has already been registered"),
+
+    PHONE_ALREADY_REGISTERED("A7","PhoneNumber has already been registered"),
+
+    PARAM_ERROR("A7","Parameter error"),
 
     // External resources and Database error codes
     EXTERNAL_DATABASE_ERROR_B1("B1", "External/Database error description 1"),

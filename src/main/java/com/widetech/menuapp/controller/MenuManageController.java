@@ -9,6 +9,7 @@ import com.widetech.menuapp.dto.responses.MenuResult;
 import com.widetech.menuapp.dto.responses.RestResponse;
 import com.widetech.menuapp.service.MenuService;
 import io.swagger.v3.oas.annotations.Parameter;
+import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -18,12 +19,12 @@ import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/menu")
-public class MenuRegisterController {
+public class MenuManageController {
 
     private final MenuService menuService;
 
     @Autowired
-    public MenuRegisterController(MenuService menuService) {
+    public MenuManageController(MenuService menuService) {
         this.menuService = menuService;
     }
 
@@ -37,22 +38,19 @@ public class MenuRegisterController {
 
         return RestResponse.success("Menu registered successfully");
     }
+
     @PostMapping("/registerItem")
     public RestResponse<String> registerMenuItem(@Parameter(ref = "register menu item one by one") @RequestBody MenuRegisterItemDto request) {
         MenuItem menuItem = new MenuItem();
         menuItem.setName(request.getName());
         menuItem.setPrice(new BigDecimal(request.getPrice()));
 
-        Menu menu = menuService.getMenuById(Integer.parseInt(request.getMenuId()));
-        if (menu != null) {
-            menu.addMenuItem(menuItem);
-            menuService.updateMenu(menu.getId(), menu);
-        } else {
-            // Handle case where no menu with the provided id exists.
+        try {
+            MenuItem savedMenuItem = menuService.registerNewItem(menuItem, Integer.parseInt(request.getMenuId()));
+            return RestResponse.success("Menu item registered successfully, ID: " + savedMenuItem.getId());
+        } catch (EntityNotFoundException e) {
             return RestResponse.fail(ErrorCode.MENU_NOT_FOUND);
         }
-
-        return RestResponse.success("Menu item registered successfully");
     }
 
     @GetMapping
@@ -83,13 +81,13 @@ public class MenuRegisterController {
 
     @DeleteMapping("/{id}")
     public RestResponse<String> deleteMenu(@PathVariable("id") Integer id) {
-        menuService.deleteItem(id);
+        menuService.deleteMenu(id);
         return RestResponse.success("Menu deleted successfully");
     }
 
     @DeleteMapping("/{itemId}")
     public RestResponse<String> deleteItem(@PathVariable("itemId") Integer id) {
-
-        return RestResponse.success("Menu deleted successfully");
+        menuService.deleteItem(id);
+        return RestResponse.success("Menu item deleted successfully");
     }
 }

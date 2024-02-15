@@ -1,6 +1,11 @@
 package com.widetech.menuapp;
 
 import com.widetech.menuapp.dao.entity.Menu;
+import com.widetech.menuapp.dao.entity.MenuItem;
+import com.widetech.menuapp.dao.repository.MenuItemRepository;
+import com.widetech.menuapp.dto.requests.MenuItemRegisterDto;
+import com.widetech.menuapp.dto.requests.MenuItemUpdateDto;
+import com.widetech.menuapp.dto.responses.MenuItemResultDto;
 import com.widetech.menuapp.service.MenuService;
 import jakarta.persistence.EntityManager;
 import jakarta.transaction.Transactional;
@@ -12,6 +17,8 @@ import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabas
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.annotation.Rollback;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
+
+import java.math.BigDecimal;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -32,17 +39,9 @@ public class MenuServiceIntegratedTests {
     @Autowired
     private MenuService menuService;
 
-    /**
-     * Registers a new menu in the database successfully.
-     * <p>
-     * This method registers a new menu in the database by performing the following steps:
-     * 1. Creates a new Menu object with the provided name and description.
-     * 2. Persists the menu object in the database.
-     * 3. Retrieves the saved menu from the database.
-     * 4. Verifies that the saved menu has a non-null id and its name matches the provided name.
-     *
-     * @throws AssertionError if the saved menu id is null or its name doesn't match the provided name.
-     */
+    @Autowired
+    private MenuItemRepository itemRepository;
+
     @Test
     @Rollback(false)//this will actually change the dataset in db
     public void registerMenuTestInsertDbSuccessfully() {
@@ -139,4 +138,80 @@ public class MenuServiceIntegratedTests {
         // Assert
         assertNull(deletedMenu);
     }
+
+    // 测试创建MenuItem
+    @Test
+    @Rollback(value = false)
+    public void testCreateMenuItem() {
+        MenuItemRegisterDto registerDto = new MenuItemRegisterDto();
+        registerDto.setMenuId("52");
+        registerDto.setName("TestItem9");
+        registerDto.setPrice("100");
+
+        MenuItemResultDto result = menuService.registerNewItem(registerDto);
+
+        MenuItem itemInDb = itemRepository.findByName("TestItem9");
+
+        assertNotNull(itemInDb);
+        assertEquals(result.getName(), itemInDb.getName());
+        assertEquals(result.getPrice(), itemInDb.getPrice().toPlainString());
+    }
+
+
+    // test update MenuItem
+    @Test
+    public void testUpdateMenuItem() {
+        // 创建一个菜单项用于更新
+        MenuItemRegisterDto itemTobeUpdated = new MenuItemRegisterDto();
+        itemTobeUpdated.setName("TestItem000");
+        itemTobeUpdated.setMenuId("102");
+        itemTobeUpdated.setDescription("descccccc");
+        itemTobeUpdated.setPrice(String.valueOf(BigDecimal.valueOf(100)));
+        MenuItemResultDto registeredNewItem = menuService.registerNewItem(itemTobeUpdated);
+
+        MenuItemUpdateDto updateDto = new MenuItemUpdateDto();
+        updateDto.setName("TestItem000Updated");
+        updateDto.setPrice("200");
+        updateDto.setDescription("updatedDesc");
+
+        MenuItemResultDto result = menuService.updateItem(String.valueOf(registeredNewItem.getItemId()), updateDto);
+
+        MenuItem updatedItemInDb = itemRepository.findById(Integer.valueOf(registeredNewItem.getItemId())).orElse(null);
+
+        assertNotNull(updatedItemInDb);
+        assertEquals(result.getName(), updatedItemInDb.getName());
+        assertEquals(result.getPrice(), updatedItemInDb.getPrice().toPlainString());
+    }
+
+    // 测试删除MenuItem
+    @Test
+    public void testDeleteMenuItem() {
+        // 创建一个菜单项用于删除
+        MenuItem itemTobeDeleted = new MenuItem();
+        itemTobeDeleted.setName("TestItem");
+        itemTobeDeleted.setPrice(new BigDecimal(100));
+        itemTobeDeleted = itemRepository.save(itemTobeDeleted);
+
+        menuService.deleteItem(itemTobeDeleted.getId());
+
+        MenuItem itemInDb = itemRepository.findById(itemTobeDeleted.getId()).orElse(null);
+
+        assertNull(itemInDb);
+    }
+
+    @Test
+    public void testGetItemById() {
+        // 创建一个菜单项用于查找
+        MenuItem itemTobeFound = new MenuItem();
+        itemTobeFound.setName("TestItem");
+        itemTobeFound.setPrice(new BigDecimal(100));
+        itemTobeFound = itemRepository.save(itemTobeFound);
+
+        MenuItem itemInDb = menuService.getItemById(String.valueOf(itemTobeFound.getId()));
+
+        assertNotNull(itemInDb);
+        assertEquals(itemTobeFound.getName(), itemInDb.getName());
+    }
+
+
 }

@@ -1,9 +1,11 @@
 package com.widetech.menuapp.dao.entity;
 
-import cn.hutool.core.math.Money;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
+import lombok.ToString;
+
+import java.math.BigDecimal;
 
 /**
  * Author: athen
@@ -14,23 +16,27 @@ import lombok.Setter;
 @Table(name = "cart_item")
 @Getter
 @Setter
+@ToString
 public class CartItem {
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE)
     private Integer id;
 
-    @ManyToOne
+    @Column(name = "name")
+    private String name;
+
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "item_id")
     private MenuItem item;
 
     @Column(name = "quantity")
     private Integer quantity;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "cart_id")
     private Cart cart;
 
     @Column(name = "price")
-    private Money price;
+    private BigDecimal price;
 
 }

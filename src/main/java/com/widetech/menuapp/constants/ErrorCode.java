@@ -7,7 +7,7 @@ package com.widetech.menuapp.constants;
 public enum ErrorCode {
     // Business error codes
     SUCCESS("A1", "Business operated successfully."),
-    MENU_NOT_FOUND("A2", "Menu not found"),
+    ENTITY_NOT_FOUND("A2", "Entity not found"),
 
     PASSWORD_ENCODE_ERROR("A2", "Password encode fails"),
 
@@ -17,11 +17,13 @@ public enum ErrorCode {
 
     ADMIN_STATUS_ERROR("A5", "Admin status not correct"),
 
-    EMAIL_ALREADY_REGISTERED("A6","Email has already been registered"),
+    EMAIL_ALREADY_REGISTERED("A6", "Email has already been registered"),
 
-    PHONE_ALREADY_REGISTERED("A7","PhoneNumber has already been registered"),
+    ITEM_NAME_ALREADY_REGISTERED("A7", "Item name has already been registered"),
 
-    PARAM_ERROR("A7","Parameter error"),
+    PHONE_ALREADY_REGISTERED("A8", "PhoneNumber has already been registered"),
+
+    PARAM_ERROR("A9", "Parameter error"),
 
     // External resources and Database error codes
     EXTERNAL_DATABASE_ERROR_B1("B1", "External/Database error description 1"),

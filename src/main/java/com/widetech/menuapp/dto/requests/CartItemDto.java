@@ -3,23 +3,25 @@ package com.widetech.menuapp.dto.requests;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotBlank;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 import org.hibernate.validator.constraints.Length;
 
 /**
  * Author: athen
- * Date: 1/24/2024
+ * Date: 2/15/2024
  * Description:
  */
 @Data
-public class MenuRegisterDto {
+@NoArgsConstructor
+public class CartItemDto {
 
-    @Schema(description = "menu name", required = true)
+    @Schema(description = "menu_item_id", required = true)
     @NotBlank
-    @Length(min = 1, max = 40)
-    private String name;
+    private String menuItemId;
 
-    @Schema(description = "menu description", required = true)
+    @Schema(description = "quantity", required = true)
+    @NotBlank
     @Length(min = 1, max = 100)
-    private String description;
+    private String quantity;
 
 }

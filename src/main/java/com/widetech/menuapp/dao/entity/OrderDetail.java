@@ -27,10 +27,11 @@ public class OrderDetail {
     @Column(name = "quantity")
     private Integer quantity;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "order_id", referencedColumnName="id")
     private Order order;
-    @ManyToOne
+
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "item_id",referencedColumnName="id")
     private MenuItem item;
 }

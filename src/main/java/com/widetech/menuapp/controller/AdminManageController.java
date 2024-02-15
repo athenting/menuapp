@@ -8,6 +8,8 @@ import com.widetech.menuapp.dto.responses.AdminLoginResultDto;
 import com.widetech.menuapp.dto.responses.AdminRegisterResultDto;
 import com.widetech.menuapp.dto.responses.RestResponse;
 import com.widetech.menuapp.service.AdminService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -19,6 +21,7 @@ import java.util.List;
  * @Author: Dian Ding
  * @Date: 24/01/2024
  */
+@Tag(name = "AdminManageController", description = "Administrator management module")
 @RestController
 @RequestMapping("/api/admin")
 public class AdminManageController {
@@ -30,6 +33,7 @@ public class AdminManageController {
      * get all existing admin users
      */
     @GetMapping
+    @Operation(summary = "get all existing admins")
     public List<Admin> getAllAdmins() {
         return adminService.getAll();
     }
@@ -41,6 +45,7 @@ public class AdminManageController {
      * @return the admin user with the given ID
      */
     @GetMapping("/{id}")
+    @Operation(summary = "get admin by id")
     public Admin getAdmin(@PathVariable Integer id) {
         return adminService.findById(id);
     }
@@ -52,6 +57,7 @@ public class AdminManageController {
      * @return the created admin user
      */
     @PostMapping("/create")
+    @Operation(summary = "create a new admin")
     public RestResponse<AdminRegisterResultDto> createAdmin(@RequestBody AdminRegisterDto registerDto) {
         return RestResponse.success(adminService.save(registerDto));
     }
@@ -66,6 +72,7 @@ public class AdminManageController {
      * @return the updated admin user
      */
     @PutMapping("/{id}")
+    @Operation(summary = "update admin info by id")
     public Admin updateAdminPassword(@PathVariable Integer id, @RequestParam String password) {
         return adminService.updatePassword(id, password);
     }
@@ -76,11 +83,19 @@ public class AdminManageController {
      * @param id the ID of the admin user to be deleted
      */
     @DeleteMapping("/{id}")
+    @Operation(summary = "delete admin by id")
     public void deleteAdmin(@PathVariable Integer id) {
         adminService.deleteById(id);
     }
 
+    /**
+     * todo: change logic to apply to jwt if possible
+     *
+     * @param loginDto
+     * @return
+     */
     @PostMapping("/login")
+    @Operation(summary = "admin login")
     public RestResponse<AdminLoginResultDto> loginAdmin(@RequestBody AdminLoginDto loginDto) {
         try {
             AdminLoginResultDto resultDto = adminService.login(loginDto);
@@ -91,6 +106,7 @@ public class AdminManageController {
     }
 
     @PostMapping("/logout/{id}")
+    @Operation(summary = "admin logout")
     public RestResponse<Void> logout(@PathVariable Integer id, @RequestParam String email) {
         try {
             adminService.logout(email);

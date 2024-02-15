@@ -1,16 +1,25 @@
 package com.widetech.menuapp.service.impl;
 
+import com.widetech.menuapp.constants.ErrorCode;
 import com.widetech.menuapp.dao.entity.Menu;
 import com.widetech.menuapp.dao.entity.MenuItem;
 import com.widetech.menuapp.dao.repository.MenuItemRepository;
 import com.widetech.menuapp.dao.repository.MenuRepository;
+import com.widetech.menuapp.dto.requests.MenuItemRegisterDto;
+import com.widetech.menuapp.dto.requests.MenuItemUpdateDto;
+import com.widetech.menuapp.dto.responses.MenuItemResultDto;
+import com.widetech.menuapp.exception.BusinessException;
 import com.widetech.menuapp.service.MenuService;
+import com.widetech.menuapp.utils.MenuItemConverter;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class MenuServiceImpl implements MenuService {
@@ -21,41 +30,83 @@ public class MenuServiceImpl implements MenuService {
     @Autowired
     private MenuItemRepository itemRepository;
 
-    // 创建新菜单
+    @Autowired
+    MenuItemConverter convert;
+
+    @Override
+    @Transactional
+    public MenuItemResultDto registerNewItem(MenuItemRegisterDto registerDto) {
+        MenuItem newItem = convert.prepareNewItemFromDto(registerDto);
+        return convert.getResultAfterSavingItem(newItem);
+    }
+
+
+    @Override
+    @Transactional
+    public void deleteItem(Integer itemId) {
+        itemRepository.deleteById(itemId);
+    }
+
+    @Override
+    @Transactional
+    public MenuItemResultDto updateItem(String id, MenuItemUpdateDto updateDto) {
+        Optional<MenuItem> optionalItem = itemRepository.findById(Integer.valueOf(id));
+
+        if (optionalItem.isEmpty()) {
+            throw new BusinessException(ErrorCode.ENTITY_NOT_FOUND);
+        }
+
+        MenuItem existingItem = optionalItem.get();
+
+        convert.updateItemFromDto(updateDto, existingItem);
+
+        MenuItem updatedItem = itemRepository.save(existingItem);
+        return convert.convertEntityToDto(updatedItem);
+    }
+
+
+    public MenuItem getItemById(String id) {
+        Optional<MenuItem> itemOptional = itemRepository.findById(Integer.valueOf(id));
+        if (itemOptional.isPresent()) {
+            return itemOptional.get();
+        } else {
+            throw new BusinessException(ErrorCode.ENTITY_NOT_FOUND);
+        }
+    }
+
+    @Override
+    public List<MenuItemResultDto> getAllMenuItems(Integer limit) {
+        PageRequest pageRequest = PageRequest.of(0, limit);
+        List<MenuItem> menuItems = itemRepository.findAll(pageRequest).getContent();
+        List<MenuItemResultDto> resultList = new ArrayList<>();
+        for (MenuItem item : menuItems) {
+            MenuItemResultDto resultDto = new MenuItemResultDto();
+            resultDto.setName(item.getName());
+            resultDto.setDescription(item.getDescription());
+            resultDto.setPrice(String.valueOf(item.getPrice()));
+            resultDto.setItemId(String.valueOf(item.getId()));
+            resultDto.setMenuId(String.valueOf(item.getMenu().getId()));
+            resultList.add(resultDto);
+        }
+        return resultList;
+    }
+
+    // create new menu
     @Override
     @Transactional
     public Menu registerMenu(Menu newMenu) {
         return menuRepository.save(newMenu);
     }
 
-    @Override
-    @Transactional
-    public MenuItem registerNewItem(MenuItem menuItem, Integer menuId) {
-        // Check if the menu exists.
-        Menu menu = menuRepository.findById(menuId)
-                .orElseThrow(() -> new EntityNotFoundException("Menu not found"));
-
-        // Add the item to the menu.
-        menu.addMenuItem(menuItem);
-
-        // Save the item in the database.
-        itemRepository.save(menuItem);
-
-        // Save the menu with the new item in the database.
-        menuRepository.save(menu);
-
-        return menuItem;
-    }
-
-    // 更新菜单信息
+    // update menu info
     @Override
     @Transactional
     public Menu updateMenu(Integer id, Menu updatedMenu) {
-        // 检查菜单是否存在
+        // checking if the menu exists
         Menu existingMenu = menuRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("Menu not found"));
 
-        // 更新菜单信息
+        // update menu info
         existingMenu.setName(updatedMenu.getName());
         existingMenu.setDescription(updatedMenu.getDescription());
 
@@ -67,31 +118,12 @@ public class MenuServiceImpl implements MenuService {
     @Override
     @Transactional
     public void deleteMenu(Integer menuId) {
-        // 检查菜单是否存在
+        // checking if the menu exists
         Menu existingMenu = menuRepository.findById(menuId)
                 .orElseThrow(() -> new EntityNotFoundException("Menu not found"));
 
-        // 删除菜单
+        // delete the menu
         menuRepository.delete(existingMenu);
-    }
-
-    @Override
-    @Transactional
-    public void deleteItem(Integer itemId) {
-        //find the menu and item
-        Menu existingMenu = menuRepository.findById(itemId)
-                .orElseThrow(() -> new EntityNotFoundException("Menu not found"));
-        List<MenuItem> menuItems = existingMenu.getMenuItems();
-
-        //find the item to be removed
-        MenuItem itemToRemove = menuItems.stream()
-                .filter(item -> item.getId().equals(itemId))
-                .findFirst()
-                .orElseThrow(() -> new EntityNotFoundException("Menu item not found"));
-        //remove the item and persist in db
-        existingMenu.removeMenuItem(itemToRemove);
-        itemRepository.delete(itemToRemove);
-        menuRepository.save(existingMenu);
     }
 
 

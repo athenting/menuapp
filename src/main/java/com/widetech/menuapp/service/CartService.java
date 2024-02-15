@@ -1,23 +1,17 @@
 package com.widetech.menuapp.service;
 
-import com.widetech.menuapp.dao.entity.Cart;
-
-/**
- * Author: athen
- * Date: 1/25/2024
- * Description:
- */
-import com.widetech.menuapp.dao.entity.CartItem;
-import com.widetech.menuapp.dao.entity.Order;
+import com.widetech.menuapp.dto.requests.CartItemDto;
+import com.widetech.menuapp.dto.responses.CartResultDto;
+import com.widetech.menuapp.dto.responses.OrderResult;
 
 import java.util.Optional;
 
 public interface CartService {
-    Cart getCart(Integer customerId);
+    CartResultDto getCart(Integer customerId);
 
-    Cart addToCart(Integer customerId, CartItem item);
+    CartResultDto addToCart(Integer customerId, CartItemDto item);
 
     void removeFromCart(Integer itemId);
 
-    Optional<Order> checkout(Integer cartId);
+    Optional<OrderResult> checkout(Integer cartId);
 }

@@ -20,13 +20,25 @@ public class MenuItem {
     @NotNull
     private String name;
 
+    @Column(name = "description")
+    private String description;
+
     @Column(name = "price")
     @NotNull
     private BigDecimal price;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "menu_id")
     @NotNull
     private Menu menu;
 
+    public MenuItem() {
+    }
+
+    public MenuItem(String name, String description, BigDecimal price, Menu menu) {
+        this.name = name;
+        this.description = description;
+        this.price = price;
+        this.menu = menu;
+    }
 }

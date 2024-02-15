@@ -1,10 +1,10 @@
 package com.widetech.menuapp.dao.entity;
 
-import cn.hutool.core.math.Money;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.math.BigDecimal;
 import java.util.Date;
 
 @Entity
@@ -17,20 +17,14 @@ public class Order {
     @GeneratedValue(strategy = GenerationType.SEQUENCE)
     private Integer id;
 
-    @ManyToOne
-    @JoinColumn(name = "customer_id")
-    private Customer customer;
-
-    /**
-     * total price
-     */
     @Column(name = "total_price")
-    private Money totalPrice;
-
-    @ManyToOne
-    @JoinColumn(name = "menu_id")
-    private Menu menu;
+    private BigDecimal totalPrice;
 
     @Column(name = "order_date")
     private Date orderDate;
+
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "customer_id")
+    private Customer customer;
+
 }

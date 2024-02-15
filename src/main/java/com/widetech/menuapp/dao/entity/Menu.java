@@ -27,6 +27,7 @@ public class Menu {
     @OneToMany(mappedBy = "menu", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<MenuItem> menuItems = new ArrayList<>();
 
+
     public void addMenuItem(MenuItem menuItem) {
         this.menuItems.add(menuItem);
         menuItem.setMenu(this);
@@ -35,5 +36,13 @@ public class Menu {
     public void removeMenuItem(MenuItem menuItem) {
         this.menuItems.remove(menuItem);
         menuItem.setMenu(null);
+    }
+
+    public Menu() {
+    }
+
+    public Menu(String name, String description) {
+        this.name = name;
+        this.description = description;
     }
 }

@@ -1,8 +1,8 @@
 package com.widetech.menuapp.controller;
 
-import com.widetech.menuapp.dao.entity.Cart;
-import com.widetech.menuapp.dao.entity.CartItem;
-import com.widetech.menuapp.dao.entity.Order;
+import com.widetech.menuapp.dto.requests.CartItemDto;
+import com.widetech.menuapp.dto.responses.CartResultDto;
+import com.widetech.menuapp.dto.responses.OrderResult;
 import com.widetech.menuapp.service.CartService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -23,13 +23,13 @@ public class CartController {
 
     // Get shopping cart for a specific customer
     @GetMapping("/{customerId}")
-    public Cart getCart(@PathVariable Integer customerId) {
+    public CartResultDto getCart(@PathVariable Integer customerId) {
         return cartService.getCart(customerId);
     }
 
     // Add a product to a specific customer's shopping cart
     @PostMapping("/{customerId}/add")
-    public Cart addToCart(@PathVariable Integer customerId, @RequestBody CartItem item) {
+    public CartResultDto addToCart(@PathVariable Integer customerId, @RequestBody CartItemDto item) {
         return cartService.addToCart(customerId, item);
     }
 
@@ -41,7 +41,7 @@ public class CartController {
 
     // Generate an order and empty the shopping cart
     @PostMapping("/{cartId}/checkout")
-    public Optional<Order> checkout(@PathVariable Integer cartId) {
+    public Optional<OrderResult> checkout(@PathVariable Integer cartId) {
         return cartService.checkout(cartId);
     }
 }

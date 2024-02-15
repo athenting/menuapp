@@ -49,7 +49,7 @@ public class OrderServiceIntegratedTests {
 
     @Test
     public void testGetOrder() {
-        // Assume there is an order with id 1 in the database
+        // Assume there is an order with id 202 in the database
         OrderResult orderResult = orderService.getOrder(202);
         assertNotNull(orderResult);
         assertEquals("202", orderResult.getId());
@@ -57,7 +57,7 @@ public class OrderServiceIntegratedTests {
 
     @Test
     public void testUpdateOrder() {
-        // Assume there is an order with id 1 in the database
+        // Assume there is an order with id 202 in the database
         OrderResult orderResult = orderService.updateOrder(20.0, 202);
         assertNotNull(orderResult);
         assertEquals("202", orderResult.getId());
@@ -66,7 +66,7 @@ public class OrderServiceIntegratedTests {
 
     @Test
     public void testDeleteOrder() {
-        // Assume you have an order with id 1 in the database
+        // Assume you have an order with id 202 in the database
         Order saveOrder = new Order();
         entityManager.persist(saveOrder);
 

@@ -1,32 +1,25 @@
 package com.widetech.menuapp.config.swagger;
 
-import io.swagger.v3.oas.models.OpenAPI;
-import io.swagger.v3.oas.models.info.Contact;
-import io.swagger.v3.oas.models.info.Info;
-import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
-import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
-import org.springframework.web.servlet.config.annotation.WebMvcConfigurationSupport;
-
 /**
  * Author: athen
  * Date: 2/13/2024
  * Description:
  */
-@Configuration
-public class SwaggerConfig extends WebMvcConfigurationSupport {
-
-    //swagger 3.0.0
-    @Bean
-    public OpenAPI customOpenAPI() {
-        return new OpenAPI()
-                .info(new Info()
-                        .title("API of Menu order app")
-                        .version("1.0")
-                        .description("API for the menu app for a restaurant")
-                        .contact(new Contact().name("Dian").email("athenting@outlook.com"))
-                );
-    }
+//@Configuration
+////@EnableOpenApi
+//public class SwaggerConfig extends WebMvcConfigurationSupport {
+//
+//    //swagger 3.0.0
+//    @Bean
+//    public OpenAPI customOpenAPI() {
+//        return new OpenAPI()
+//                .info(new Info()
+//                        .title("API of Menu order app")
+//                        .version("1.0")
+//                        .description("API for the menu app for a restaurant")
+//                        .contact(new Contact().name("Dian").email("athenting@outlook.com"))
+//                );
+//    }
 
     //swagger 2.X
 //    @Bean
@@ -52,18 +45,18 @@ public class SwaggerConfig extends WebMvcConfigurationSupport {
     /**
      * 解决swagger-ui.html 404无法访问的问题
      */
-    @Override
-    protected void addResourceHandlers(ResourceHandlerRegistry registry) {
-        // 解决静态资源无法访问
-        registry.addResourceHandler("/**")
-                .addResourceLocations("classpath:/static/");
-        // 解决swagger无法访问
-        registry.addResourceHandler("/swagger-ui.html")
-                .addResourceLocations("classpath:/META-INF/resources/");
-        // 解决swagger的js文件无法访问
-        registry.addResourceHandler("/webjars/**")
-                .addResourceLocations("classpath:/META-INF/resources/webjars/");
-    }
+//    @Override
+//    protected void addResourceHandlers(ResourceHandlerRegistry registry) {
+//        // 解决静态资源无法访问
+//        registry.addResourceHandler("/**")
+//                .addResourceLocations("classpath:/static/");
+//        // 解决swagger无法访问
+//        registry.addResourceHandler("/swagger-ui.html")
+//                .addResourceLocations("classpath:/META-INF/resources/");
+//        // 解决swagger的js文件无法访问
+//        registry.addResourceHandler("/webjars/**")
+//                .addResourceLocations("classpath:/META-INF/resources/webjars/");
+//    }
 
 
-}
+//}

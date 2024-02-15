@@ -24,7 +24,7 @@ import java.util.stream.Collectors;
 
 @Tag(name = "MenuManageController", description = "Menu and menu item management module")
 @RestController
-@RequestMapping("/menu")
+@RequestMapping("/api/menu")
 public class MenuManageController {
 
     private final MenuService menuService;
@@ -34,7 +34,7 @@ public class MenuManageController {
         this.menuService = menuService;
     }
 
-    @PostMapping("item")
+    @PostMapping("/item")
     @Operation(summary = "register menu item")
     public RestResponse<MenuItemResultDto> registerMenuItem(@Parameter(ref = "register menu item one by one") @RequestBody MenuItemRegisterDto request) {
         try {
@@ -45,7 +45,7 @@ public class MenuManageController {
         }
     }
 
-    @PutMapping("item/{id}")
+    @PutMapping("/item/{id}")
     @Operation(summary = "update menu item info, menu id cannot be changed")
     public RestResponse<MenuItemResultDto> updateItem(@PathVariable String id, @RequestBody MenuItemUpdateDto menuItemUpdateDto) {
         try {
@@ -56,7 +56,7 @@ public class MenuManageController {
         }
     }
 
-    @GetMapping("item/{id}")
+    @GetMapping("/item/{id}")
     @Operation(summary = "get menu item by name")
     public RestResponse<MenuItemResultDto> getItem(@Parameter(description = "item id") @PathVariable String id) {
         MenuItem menuItem = menuService.getItemById(id);
@@ -70,13 +70,13 @@ public class MenuManageController {
                 build());
     }
 
-    @GetMapping("items")
+    @GetMapping("/items")
     @Operation(summary = "get all of the menu items")
     public List<MenuItemResultDto> getAllMenuItems(@Parameter(description = "limit") @NonNull Integer limit) {
         return menuService.getAllMenuItems(limit);
     }
 
-    @DeleteMapping("item/{itemId}")
+    @DeleteMapping("/item/{itemId}")
     @Operation(summary = "delete menu item by id")
     public RestResponse<String> deleteItem(@PathVariable("itemId") Integer id) {
         menuService.deleteItem(id);

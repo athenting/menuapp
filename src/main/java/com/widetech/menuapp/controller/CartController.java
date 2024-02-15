@@ -15,7 +15,7 @@ import java.util.Optional;
  * Description:
  */
 @RestController
-@RequestMapping("/cart")
+@RequestMapping("/api/cart")
 public class CartController {
 
     @Autowired

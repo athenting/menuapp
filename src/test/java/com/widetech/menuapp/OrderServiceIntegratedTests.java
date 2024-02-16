@@ -52,7 +52,7 @@ public class OrderServiceIntegratedTests {
         // Assume there is an order with id 202 in the database
         OrderResult orderResult = orderService.getOrder(202);
         assertNotNull(orderResult);
-        assertEquals("202", orderResult.getId());
+        assertEquals("202", orderResult.getOrderId());
     }
 
     @Test
@@ -60,7 +60,7 @@ public class OrderServiceIntegratedTests {
         // Assume there is an order with id 202 in the database
         OrderResult orderResult = orderService.updateOrder(20.0, 202);
         assertNotNull(orderResult);
-        assertEquals("202", orderResult.getId());
+        assertEquals("202", orderResult.getOrderId());
         assertEquals("20", orderResult.getTotalPrice());
     }
 

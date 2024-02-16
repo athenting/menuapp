@@ -68,7 +68,7 @@ public class CartConverter {
         return OrderResult.builder()
                 .totalPrice(String.valueOf(order.getTotalPrice()))
                 .customerId(String.valueOf(order.getCustomer().getId()))
-                .id(String.valueOf(order.getId()))
+                .orderId(String.valueOf(order.getId()))
                 .orderDate(order.getOrderDate().toString())
                 .cartItems(itemResultDtos)
                 .build();

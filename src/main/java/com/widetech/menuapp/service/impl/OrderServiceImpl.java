@@ -50,7 +50,7 @@ public class OrderServiceImpl implements OrderService {
         }
         return OrderResult.builder().
                 orderDate(order.get().getOrderDate().toString()).
-                id(String.valueOf(order.get().getId())).
+                orderId(String.valueOf(order.get().getId())).
                 customerId(String.valueOf(order.get().getCustomer().getId())).
                 totalPrice(order.get().getTotalPrice().toString()).
                 build();
@@ -67,7 +67,7 @@ public class OrderServiceImpl implements OrderService {
                 .orElseThrow(() -> new EntityNotFoundException("Order with id " + id + " not found"));
 
         return OrderResult.builder()
-                .id(String.valueOf(order.getId()))
+                .orderId(String.valueOf(order.getId()))
                 .totalPrice(order.getTotalPrice().toString())
                 .customerId(String.valueOf(order.getCustomer().getId()))
                 .orderDate(order.getOrderDate().toString())
@@ -85,5 +85,4 @@ public class OrderServiceImpl implements OrderService {
         //todo: proceed to payment functions
         return null;
     }
-
 }

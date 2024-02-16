@@ -1,9 +1,12 @@
 package com.widetech.menuapp.constants;
 
+import lombok.Getter;
+
 /**
  *
  */
 
+@Getter
 public enum ErrorCode {
     // Business error codes
     SUCCESS("A1", "Business operated successfully."),

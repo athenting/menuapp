@@ -5,12 +5,6 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Getter;
 import lombok.Setter;
 
-/**
- * Http Rest response
- *
- * @author xiongxiaoyang
- * @date 2022/5/11
- */
 @Getter
 @Setter
 public class RestResponse<T> {

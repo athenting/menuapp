@@ -52,7 +52,7 @@ public class OrderController {
     public RestResponse<String> proceedToPay(@PathVariable Integer orderId) {
         orderService.proceedToPay(orderId);
 
-        //todo: payment business logic to be done
+        //todo: payment business logic to be done, add order status
 
         return RestResponse.success("Payment success.");
     }

@@ -16,7 +16,7 @@ import java.util.List;
 public class OrderResult {
 
     @Schema(description = "order_id")
-    private String id;
+    private String orderId;
 
     @Schema(description = "total_price")
     private String totalPrice;
